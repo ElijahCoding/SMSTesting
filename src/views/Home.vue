@@ -5,7 +5,9 @@
                 <form @submit.prevent="submit">
                         <div class="form-group">
                             <vue-tel-input v-model="phone"
+                                           required
                                            class="form-control"
+                                           defaultCountry="ru"
                                            :preferredCountries="['us', 'gb', 'ru']">
                                            >
                             </vue-tel-input>
@@ -40,7 +42,27 @@
 
         methods: {
             submit () {
-                console.log(this.phone);
+                let phone = this.phone.replace(/\s/g, '').replace('+', '')
+
+                axios({
+                    method: 'post',
+                    url: 'https://9qmry.api.infobip.com/sms/2/text/single',
+                    data: {
+                        "from": "InfoSMS",
+                        "to": phone,
+                        "text": `Test SMS from ${phone}`
+                    },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    auth: {
+                        username: 'Bitchange123',
+                        password: 'QwertY7747'
+                    }
+                }).then(response => {
+                    this.phone = ''
+                })
             }
         }
 
